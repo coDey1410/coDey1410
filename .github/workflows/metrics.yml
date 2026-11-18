@@ -1,0 +1,32 @@
+name: Auto-Generate Tech Profile Metrics
+on:
+  schedule: [{cron: "0 0 * * *"}] # Runs automatically every 24 hours
+  workflow_dispatch:              # Allows manual 1-click run
+  push: {branches: ["main", "master"]}
+
+jobs:
+  github-metrics:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: lowlighter/metrics@latest
+        with:
+          filename: github-metrics.svg
+          token: ${{ secrets.METRICS_TOKEN }}
+          base: header, activity, community, repositories, metadata
+          config_timezone: Asia/Kolkata
+          # Automatically scans your repos for languages & frameworks
+          plugin_languages: yes
+          plugin_languages_analysis_timeout: 15
+          plugin_languages_categories: markup, programming
+          plugin_languages_colors: github
+          plugin_languages_sections: most-used, recently-used
+          # Automatically detects coding habits from recent commits
+          plugin_habits: yes
+          plugin_habits_from: 100
+          plugin_habits_facts: yes
+          plugin_habits_charts: yes
+          # Automatically displays isometric 3D calendar
+          plugin_isocalendar: yes
+          plugin_isocalendar_duration: half-year
